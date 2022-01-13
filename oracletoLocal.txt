@@ -1,0 +1,14 @@
+# Read table data from Oracle RDS and stored that in local system 
+
+from pyspark.sql import *
+spark=SparkSession.builder.master("local[2]").appName("testing").getOrCreate()
+
+# host varible stored that ip of RDS with port number and DB name
+host="jdbc:oracle:thin:@//oracle.cq8iqbvz0eol.us-east-2.rds.amazonaws.com:1521/ORCL"  
+
+# read data with help of jdbc driver 
+df=spark.read.format("jdbc").option("url",host).option("user","ouser").option("password","opassword").option("dbtable","EMP").option("driver","oracle.jdbc.driver.OracleDriver").load()
+df.show()
+
+# write data at specific location in local system 
+df.write.format("csv").option("header","true").save("E://bigdata//DataSpark/emp2")    
